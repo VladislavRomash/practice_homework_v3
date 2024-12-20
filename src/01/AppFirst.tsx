@@ -1,6 +1,6 @@
 import React from 'react';
 import './AppFirst.css';
-import {Data} from './dataFirstType';
+import {Data} from './typesFirstType';
 import {Tasks} from './Tasks';
 
 

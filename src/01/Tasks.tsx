@@ -1,5 +1,5 @@
 import React from 'react';
-import {Data} from './dataFirstType';
+import {Data} from './typesFirstType';
 
 type TaskProps = {
     data: Data

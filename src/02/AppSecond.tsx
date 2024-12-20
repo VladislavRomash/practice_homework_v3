@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import './AppSecond.css';
 import {Todolist} from './Todolist';
-
-export type FilterValuesType = 'all' | 'active' | 'completed';
+import {Filter, Task} from './secondTypes';
 
 //Hi guys!
 //1. Let's create a 'DELETE ALL TASKS' button, and place it above the filter buttons
@@ -11,9 +10,9 @@ export type FilterValuesType = 'all' | 'active' | 'completed';
 //3. Relocate everything associated with  filters to the Todolist.tsx component. Make it work
 
 
-export function AppSecond() {
+export function AppSecond(): React.ReactElement {
 
-    let [tasks, setTasks] = useState([
+    let [tasks, setTasks] = useState<Task[]>([
         {id: 1, title: 'HTML&CSS', isDone: true},
         {id: 2, title: 'JS', isDone: true},
         {id: 3, title: 'ReactJS', isDone: false},
@@ -23,27 +22,32 @@ export function AppSecond() {
 
     const removeTask = (id: number) => setTasks(tasks.filter(t => t.id != id))
 
-    let [filter, setFilter] = useState<FilterValuesType>('all');
+    let [filter, setFilter] = useState<Filter>('all');
 
-    let tasksForTodolist = tasks;
-
-    if (filter === 'active') {
-        tasksForTodolist = tasks.filter(t => t!.isDone);
+    const getFilterTitle = (value: Filter) => setFilter(value);
+    const filteringTasks = (value: Filter, tasks: Task[]) => {
+        switch (value) {
+            case 'active':
+                return tasks.filter(f => !f.isDone)
+            case 'completed':
+                return tasks.filter(f => f.isDone)
+            case 'three':
+                return tasks.filter((_, i) => i < 3)
+            default:
+                return tasks
+        }
     }
-    if (filter === 'completed') {
-        tasksForTodolist = tasks.filter(t => t.isDone);
-    }
-
-    function changeFilter(value: FilterValuesType) {
-        setFilter(value);
-    }
+    const filteredTasks: Task[] = filteringTasks(filter, tasks)
+    const deleteAllTasks = () => setTasks([])
 
     return (
         <div className="App">
             <Todolist title="What to learn"
-                      tasks={tasksForTodolist}
+                      tasks={filteredTasks}
                       removeTask={removeTask}
-                      changeFilter={changeFilter}/>
+                      changeFilter={getFilterTitle}
+                      deleteAllTasks={deleteAllTasks}
+            />
         </div>
     );
 }
