@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './AppSecond.css';
 import {Todolist} from './Todolist';
-import {Filter, Task} from './secondTypes';
+import {Task} from './secondTypes';
 
 //Hi guys!
 //1. Let's create a 'DELETE ALL TASKS' button, and place it above the filter buttons
@@ -22,30 +22,13 @@ export function AppSecond(): React.ReactElement {
 
     const removeTask = (id: number) => setTasks(tasks.filter(t => t.id != id))
 
-    let [filter, setFilter] = useState<Filter>('all');
-
-    const getFilterTitle = (value: Filter) => setFilter(value);
-    const filteringTasks = (value: Filter, tasks: Task[]) => {
-        switch (value) {
-            case 'active':
-                return tasks.filter(f => !f.isDone)
-            case 'completed':
-                return tasks.filter(f => f.isDone)
-            case 'three':
-                return tasks.filter((_, i) => i < 3)
-            default:
-                return tasks
-        }
-    }
-    const filteredTasks: Task[] = filteringTasks(filter, tasks)
     const deleteAllTasks = () => setTasks([])
 
     return (
         <div className="App">
             <Todolist title="What to learn"
-                      tasks={filteredTasks}
+                      tasks={tasks}
                       removeTask={removeTask}
-                      changeFilter={getFilterTitle}
                       deleteAllTasks={deleteAllTasks}
             />
         </div>

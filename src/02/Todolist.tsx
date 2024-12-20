@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Filter, Task} from './secondTypes';
 import {Button} from './Button';
 
@@ -6,17 +6,33 @@ type PropsType = {
     title: string
     tasks: Task[]
     removeTask: (taskId: number) => void
-    changeFilter: (value: Filter) => void
     deleteAllTasks: () => void
 }
 
 export function Todolist(props: PropsType): React.ReactElement {
 
-    const {tasks, changeFilter, deleteAllTasks} = props
+    const {tasks, deleteAllTasks} = props
+
+    let [filter, setFilter] = useState<Filter>('all');
+
+    const getFilterTitle = (value: Filter) => setFilter(value);
+    const filteringTasks = (value: Filter, tasks: Task[]) => {
+        switch (value) {
+            case 'active':
+                return tasks.filter(f => !f.isDone)
+            case 'completed':
+                return tasks.filter(f => f.isDone)
+            case 'three':
+                return tasks.filter((_, i) => i < 3)
+            default:
+                return tasks
+        }
+    }
+    const filteredTasks: Task[] = filteringTasks(filter, tasks)
 
     const removalAllTasks = () => deleteAllTasks()
 
-    const tasksList: React.ReactElement[] = tasks.map(t => <li key={t.id}>
+    const tasksList: React.ReactElement[] = filteredTasks.map(t => <li key={t.id}>
         <input type="checkbox" checked={t.isDone}/>
         <span>{t.title}</span>
         <Button title={'x'} onclickCallback={() => {
@@ -27,10 +43,10 @@ export function Todolist(props: PropsType): React.ReactElement {
         ? tasksList
         : <p>List is empty</p>
 
-    const onClickAll = () => changeFilter('all')
-    const onClickActive = () => changeFilter('active')
-    const onClickCompleted = () => changeFilter('completed')
-    const onClickThree = () => changeFilter('three')
+    const onClickAll = () => getFilterTitle('all')
+    const onClickActive = () => getFilterTitle('active')
+    const onClickCompleted = () => getFilterTitle('completed')
+    const onClickThree = () => getFilterTitle('three')
 
     return <div>
         <h3>{props.title}</h3>
